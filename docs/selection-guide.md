@@ -35,6 +35,7 @@ These are candidates to evaluate, not a benchmark ranking or a claim of intercha
 | Test OCI resource and application integrations | Floci OCI | Endpoint routing, work requests, tenancy isolation, and required sidecars; signature parsing does not prove authorization. |
 | Test Cloudflare Workers and bindings | Miniflare through Wrangler or its programmatic API | Local binding behavior, persistence, and differences from production; distinguish local execution from remote bindings. |
 | Test European cloud infrastructure automation | Feint | Provider-specific CLI/IaC operation coverage, endpoint guards, and control-plane versus optional machine runtime behavior. |
+| Test Snowflake SQL and data pipelines locally | LocalStack for Snowflake | Required SQL features, client connectivity, pipeline behavior, and Snowflake license access. |
 | Test real VM boot and guest networking through AWS-compatible APIs | Spinifex | KVM host setup, cloud-init, SSH reachability, network rules, teardown, and differences from AWS. |
 | Test infrastructure automation across clouds | cloudemu; Vera for EC2/Compute scope | Full create/read/update/delete lifecycle with the real CLI or IaC provider. |
 | Run emulators in automated Java tests | Testcontainers Azure, Google Cloud, or LocalStack modules | Image readiness, fixture isolation, cleanup, and parallel execution. |
@@ -120,6 +121,12 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 | [Feint](https://github.com/stephrobert/feint) | Open source | Scaleway, Outscale, and Exoscale APIs | Go binary or container; optional Incus/OVN machine runtime | Community | Validate provider-specific CLI/IaC lifecycle and endpoint routing; authentication, quotas, capacity, and eventual consistency differ. |
 | [Vera](https://github.com/project-vera/vera) | Other distributions | AWS EC2 and Google Compute APIs | Docker Compose | Community | Scope is compute/infrastructure simulation, not all AWS or GCP services. |
 
+### Snowflake
+
+| Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
+| --- | --- | --- | --- | --- | --- |
+| [LocalStack for Snowflake 💰 📜](https://docs.localstack.cloud/snowflake) | Paid/commercial | Snowflake SQL APIs | Container, managed through CLI or Docker | Vendor | SQL feature coverage, SDK and pipeline integrations, and license activation. |
+
 ### Supporting Tools
 
 | Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
@@ -140,13 +147,14 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 
 ## License and access notes
 
-Existing entries checked against primary sources on **2026-09-28**; Spinifex and LocalStack for Azure checked on **2026-09-29**. These markers describe the listed distribution; dependencies and optional hosted services can carry separate terms.
+Existing entries checked against primary sources on **2026-09-28**; Spinifex and LocalStack for Azure checked on **2026-09-29**; LocalStack for Snowflake checked on **2026-09-30**. These markers describe the listed distribution; dependencies and optional hosted services can carry separate terms.
 
 | Tool | Markers | What to check | Primary source |
 | --- | --- | --- | --- |
 | Spinifex | 💰 | AGPL-3.0 is free; an optional paid commercial edition includes a separate license, enterprise features, and support. | [Purchase and editions](https://mulgadc.com/purchase), [source license](https://github.com/mulgadc/spinifex/blob/main/LICENSE). |
 | LocalStack | 💰 📜 | Commercial use is offered through paid plans, subject to vendor exceptions/programs. Hobby is free for non-commercial use; activation requires an account/token. | [Plans and pricing](https://www.localstack.cloud/pricing), [activation](https://docs.localstack.cloud/aws/getting-started/installation). |
 | LocalStack for Azure | 💰 📜 | Private preview: Azure access is enabled on request for an active LocalStack subscription (paid, trial, or Hobby). Commercial use is offered through paid plans; Hobby is free for non-commercial use. Activation requires an auth token; CI requires a CI Auth Token. | [Preview access and activation](https://docs.localstack.cloud/azure/getting-started/auth-token/#managing-your-license), [plans and pricing](https://www.localstack.cloud/pricing), [Terms of Service](https://www.localstack.cloud/legal/terms-of-service). |
+| LocalStack for Snowflake | 💰 📜 | Snowflake access is available through a trial or paid offering. Activation requires an auth token and an assigned Snowflake license. | [License access and activation](https://docs.localstack.cloud/snowflake/getting-started/auth-token/), [Terms of Service](https://www.localstack.cloud/legal/terms-of-service). |
 | DynamoDB Local | 📜 | The downloadable software has a specific AWS license agreement. This marker identifies those conditions, not a paid emulator subscription. | [DynamoDB Local License Agreement](https://aws.amazon.com/dynamodb/dynamodblocallicense). |
 | Azure Event Hubs Emulator | 📜 | Startup requires accepting Microsoft's software terms through `ACCEPT_EULA`. | [Microsoft setup and EULA instructions](https://learn.microsoft.com/en-us/azure/event-hubs/test-locally-with-event-hub-emulator). |
 | Azure Service Bus Emulator | 📜 | Setup requires accepting the emulator and SQL Server Linux terms through `ACCEPT_EULA`. | [Microsoft setup and EULA instructions](https://learn.microsoft.com/en-us/azure/service-bus-messaging/test-locally-with-service-bus-emulator). |
@@ -169,6 +177,8 @@ An unmarked entry is not a claim of unrestricted use or a verified open-source r
 The [former LocalStack source repository](https://github.com/localstack/localstack) is archived, but its notice directs users to the unified product. The catalog therefore links current product documentation rather than treating an archived checkout as the supported distribution. Current [installation documentation](https://docs.localstack.cloud/aws/getting-started/installation) requires authentication to activate AWS features; check plan and CI conditions before adopting it.
 
 LocalStack for Azure has no public source repository, so the catalog links its [documentation](https://docs.localstack.cloud/azure). It is in private preview; review the [license and access notes](#license-and-access-notes) before adopting it.
+
+LocalStack for Snowflake runs in a single container for local SQL and data pipeline testing without a real Snowflake account. Its documentation includes [feature coverage](https://docs.localstack.cloud/snowflake/feature-coverage/) and [SQL functions](https://docs.localstack.cloud/snowflake/sql-functions/) references; see the [license and access notes](#license-and-access-notes) for activation requirements.
 
 ### Hiraeth coverage
 
@@ -262,5 +272,5 @@ Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed
 - Removed the attachment's Cloud Tasks inactivity claim: the [repository metadata](https://api.github.com/repos/aertje/cloud-tasks-emulator) reported a push on 2026-09-09 during this review. A recent push alone does not establish maintenance quality or compatibility.
 - Narrowed Fullstory's shipped coverage to Bigtable and Cloud Storage, and Vera's scope to EC2 and Google Compute. Distinguished LocalStack's archived source from its current product.
 - Treated the attachment's Hacker News link as discovery context, not technical evidence or an independently verified origin claim for this repository.
-- The 2026-10-02 provider review added Feint, Floci OCI, Miniflare, and Serverless Devs after checking 50+ repository stars, non-archived status, and repository pushes in 2026. Miniflare shares the Workers SDK repository's star count; Serverless Devs' FC components have separate repositories and counts. These discovery filters do not establish maintenance quality or compatibility. Feint, Floci OCI, and Miniflare are Apache-2.0, MIT, and MIT respectively; Serverless Devs is Apache-2.0, while its FC3 component is MIT. The current catalog contains 51 entries, including Beyond Emulation.
+- The 2026-10-02 provider review added Feint, Floci OCI, Miniflare, and Serverless Devs after checking 50+ repository stars, non-archived status, and repository pushes in 2026. Miniflare shares the Workers SDK repository's star count; Serverless Devs' FC components have separate repositories and counts. These discovery filters do not establish maintenance quality or compatibility. Feint, Floci OCI, and Miniflare are Apache-2.0, MIT, and MIT respectively; Serverless Devs is Apache-2.0, while its FC3 component is MIT. The current catalog contains 52 entries, including Beyond Emulation.
 - Preserved the existing CC0 license and contribution policy; omitted the attachment's obsolete instruction to add a license file.
