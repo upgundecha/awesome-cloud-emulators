@@ -214,6 +214,7 @@ The [AGPL-3.0 edition](https://github.com/mulgadc/spinifex/blob/main/LICENSE) is
 | --- | --- | --- |
 | API coverage | Are required operations, SDK versions, protocols, and errors supported? | Operation checklist tied to application tests. |
 | Behavior | Do transactions, ordering, retries, timeouts, and consistency meet test assumptions? | Positive and negative test results against emulator and cloud. |
+| Contract comparison | When were the same versioned contract fixtures last run against both the emulator and the real service? | Fixture revision, separate run dates/results, emulator and client versions, cloud configuration, and known differences; mark unrun cases explicitly. |
 | Identity and networking | Are permissions enforced, bypassed, or partially modeled? Is TLS required? | Auth mode, trust configuration, and real-cloud test gaps. |
 | Lifecycle | Can tests seed, reset, and destroy state? Is persistence intentional? | Repeatable fixtures and a clean teardown run. |
 | Runtime | Are OS, architecture, dependencies, and container privileges compatible with CI? | Successful run on the actual CI runner class. |
@@ -223,6 +224,25 @@ The [AGPL-3.0 edition](https://github.com/mulgadc/spinifex/blob/main/LICENSE) is
 | Isolation | Can parallel jobs avoid shared-state collisions or real-cloud calls? | Unique endpoints/resources, dummy credentials, and endpoint guards. |
 | Operational support | Can failures be diagnosed and upgrades rolled back? | Logs, version/image pin, and upgrade comparison results. |
 | Production validation | Which properties are outside the emulator's model? | A named real-cloud suite and an owner for each gap. |
+
+### Compare the same contract fixtures
+
+Use the same versioned inputs and assertions against local and controlled real-cloud endpoints, with environment-specific configuration kept explicit. Record each run date and result, the fixture revision, emulator release or image digest, SDK/IaC provider version, and relevant cloud API version, region, and service configuration. Managed services may not expose a selectable runtime version. Record known differences and any skipped or unrun cases; do not turn an unrun case into a compatibility claim.
+
+A dated comparison establishes evidence for that scenario and configuration, not full service parity. Re-run it after relevant fixture, emulator, client, or service changes. The catalog's comparison matrix is documentation-based; these run records belong to your evaluation unless published evidence is linked.
+
+### Exercise processing followed by failed acknowledgement
+
+For an object → queue → worker flow, include the successful round trip and this failure path when the selected service and receive mode support redelivery:
+
+1. Create the object and publish its reference with a stable application-level work identifier.
+2. Let the worker process the message and commit its side effect.
+3. Prevent the acknowledgement, completion, or deletion from reaching the broker after processing, so the message remains eligible for redelivery.
+4. Allow redelivery under the configured visibility timeout or lock behavior. Verify that repeat processing preserves the intended result, such as one database update or charge, and that the message can then be settled.
+
+Also distinguish a settlement request that never reaches the broker from a successful settlement whose response is lost: the latter leaves the client uncertain and does not guarantee redelivery. Record which case the test exercises.
+
+Use local fault injection or explicitly controlled redelivery to check application duplicate handling; record any simulated behavior. Validate the actual service's delivery, settlement, retry, ordering, and dead-letter behavior in the cloud as required by the workload. See [Amazon SQS standard-queue at-least-once delivery](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues-at-least-once-delivery.html) and [Azure Service Bus locks and settlement](https://learn.microsoft.com/en-us/azure/service-bus-messaging/message-transfers-locks-settlement) for service-specific boundaries.
 
 ## Reusable emulator baselines
 
@@ -244,7 +264,7 @@ These combinations are research candidates; verify restore behavior and isolatio
 
 1. **Define a small vertical slice.** Record the SDK/IaC version, operations, event flow, expected errors, and acceptable differences.
 2. **Shortlist the smallest useful tool.** A single-service emulator may be enough; select a suite when interactions matter.
-3. **Run the same scenario locally and in a controlled cloud account.** Include a negative case, retry path, restart, and cleanup. For IaC, include refresh and destroy rather than plan alone.
+3. **Run the same contract fixtures locally and in a controlled cloud account.** Include a negative case, retry path, restart, and cleanup. For messaging, include processing followed by failed acknowledgement and redelivery where supported. For IaC, include refresh and destroy rather than plan alone.
 4. **Record the result.** Use the decision record below. Pin the tool version or image digest and document gaps.
 5. **Integrate in CI.** Wait for readiness, isolate jobs, reset state, capture logs, and confirm cleanup after failure.
 6. **Keep cloud validation.** Retain tests for permissions, networking, deployment, performance, and resilience properties that local emulation cannot establish.
@@ -256,6 +276,8 @@ These combinations are research candidates; verify restore behavior and isolatio
 | --- | --- |
 | Candidate and version | Tool, release or image digest, and primary documentation. |
 | Scenario and client | Required services, operations, SDK/IaC version, and test entry point. |
+| Contract fixture and last runs | Fixture revision and test entry point; separate emulator/cloud run dates and passed, failed, skipped, or unrun cases. |
+| Cloud configuration | Service/API version where available, region, receive mode, and relevant delivery, retry, and settlement settings. |
 | Results | Passed/failed cases, logs, runtime, and resource use measured on your runner. |
 | Known gaps | Semantic differences and features intentionally not modeled. |
 | Access and setup | License/plan, activation, dependencies, endpoint and state configuration. |
