@@ -2,7 +2,7 @@
 
 > Cloud emulators reproduce selected cloud service APIs and behavior for local development and automated testing.
 
-Discover emulators and cloud-specific test doubles for **AWS, Microsoft Azure, Google Cloud (GCP), and Snowflake**. Build repeatable integration tests and shorten feedback loops without provisioning every dependency in a cloud account.
+Discover emulators and cloud-specific test doubles for **AWS, Microsoft Azure, Google Cloud (GCP), Oracle Cloud, Cloudflare, Snowflake, and European cloud providers**. Build repeatable integration tests and shorten feedback loops without provisioning every dependency in a cloud account.
 
 Local mocks and emulators can **reduce development and CI costs** by avoiding repeated provisioning, idle test resources, and billable service calls in cloud accounts. Savings depend on the workload and should be weighed against local compute, maintenance, and any emulator licensing costs.
 
@@ -29,6 +29,8 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
 - [Google Cloud and Firebase](#google-cloud-and-firebase)
   - [Google Cloud Multi-Service](#google-cloud-multi-service)
   - [Google Cloud Single-Service](#google-cloud-single-service)
+- [Oracle Cloud](#oracle-cloud)
+- [Cloudflare](#cloudflare)
 - [Cross-Cloud](#cross-cloud)
 - [Beyond Emulation](#beyond-emulation)
 - [Snowflake](#snowflake)
@@ -125,11 +127,25 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
 - [Pub/Sub Emulator](https://cloud.google.com/pubsub/docs/emulator) - Google-provided local Pub/Sub environment for testing publishers and subscribers.
 
 
+## Oracle Cloud
+
+**Open source**
+
+- [Floci OCI](https://github.com/floci-io/floci-oci) - Community Oracle Cloud Infrastructure emulator covering identity, object storage, messaging, and selected other APIs, with configurable persistence and optional container-backed execution.
+
+## Cloudflare
+
+**Open source**
+
+- [Miniflare](https://developers.cloudflare.com/workers/testing/miniflare/) - Cloudflare-maintained local Workers simulator with storage bindings such as KV, R2, D1, and Durable Objects, also used by Wrangler for local development.
+
 ## Cross-Cloud
 
 **Open source**
 
 - [cloudemu](https://github.com/stackshy/cloudemu) - In-memory simulation of AWS, Azure, and Google Cloud APIs, runnable as a server or embedded in Go tests.
+
+- [Feint](https://github.com/stephrobert/feint) - Community emulator for Scaleway, Outscale, and Exoscale APIs, with official CLI and Terraform/OpenTofu workflows and optional Incus-backed machine execution.
 
 **Other distributions**
 
@@ -166,6 +182,7 @@ These tools run local workloads, manage emulator lifecycles, or prepare and rest
 - [Docker Checkpoint/Restore](https://docs.docker.com/reference/cli/docker/checkpoint) - Experimental Docker Engine integration with CRIU for checkpointing and restoring running containers.
 - [Moto Recorder](https://docs.getmoto.org/en/stable/docs/configuration/recorder/index.html) - Built-in Moto request recording and replay for rebuilding test baselines; replay is not a process-memory snapshot.
 - [Podman Checkpoint/Restore](https://podman.io/docs/checkpoint) - CRIU-backed container checkpointing with archive export/import for restoring prepared emulator environments on compatible Linux hosts.
+- [Serverless Devs](https://github.com/Serverless-Devs/Serverless-Devs) - Open-source serverless development CLI with Function Compute components for locally invoking and debugging Alibaba Cloud functions; it does not emulate dependent cloud services.
 - [Testcontainers Azure Module](https://java.testcontainers.org/modules/azure/) - Java test integrations that manage Azurite, Event Hubs, Service Bus, and Cosmos DB emulator containers.
 - [Testcontainers Google Cloud Module](https://java.testcontainers.org/modules/gcloud) - Java test integrations that manage the lifecycle of Google Cloud emulator containers.
 - [Testcontainers LocalStack Module](https://java.testcontainers.org/modules/localstack/) - Java test integration that manages a LocalStack container and its endpoints; emulator features depend on the selected LocalStack plan.
