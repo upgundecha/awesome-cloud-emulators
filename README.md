@@ -2,7 +2,7 @@
 
 > Cloud emulators reproduce selected cloud service APIs and behavior for local development and automated testing.
 
-Discover emulators and cloud-specific test doubles for **AWS, Microsoft Azure, and Google Cloud (GCP)**. Build repeatable integration tests and shorten feedback loops without provisioning every dependency in a cloud account.
+Discover emulators and cloud-specific test doubles for **AWS, Microsoft Azure, Google Cloud (GCP), and Snowflake**. Build repeatable integration tests and shorten feedback loops without provisioning every dependency in a cloud account.
 
 Local mocks and emulators can **reduce development and CI costs** by avoiding repeated provisioning, idle test resources, and billable service calls in cloud accounts. Savings depend on the workload and should be weighed against local compute, maintenance, and any emulator licensing costs.
 
@@ -31,6 +31,7 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
   - [Google Cloud Single-Service](#google-cloud-single-service)
 - [Cross-Cloud](#cross-cloud)
 - [Beyond Emulation](#beyond-emulation)
+- [Snowflake](#snowflake)
 - [Supporting Tools](#supporting-tools)
 - [Choosing an Emulator](#choosing-an-emulator)
 - [Support](#support)
@@ -142,6 +143,13 @@ Some infrastructure tests need real guest execution, storage, and networking beh
 **Open source**
 
 - [Spinifex 💰](https://github.com/mulgadc/spinifex) - Self-hosted AWS-compatible platform for testing infrastructure and workloads with real QEMU/KVM instances, storage, and OVN-backed networking.
+
+
+## Snowflake
+
+**Paid/commercial**
+
+- [LocalStack for Snowflake 💰 📜](https://docs.localstack.cloud/snowflake) - Vendor-maintained Snowflake emulator distributed as a container for local SQL, data pipeline, and integration testing; activation requires an auth token and an assigned Snowflake license, available through a trial or paid offering.
 
 
 ## Supporting Tools

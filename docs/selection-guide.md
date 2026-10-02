@@ -32,6 +32,7 @@ These are candidates to evaluate, not a benchmark ranking or a claim of intercha
 | Test a Firebase application | Firebase Local Emulator Suite | Auth, Security Rules, database events, and function triggers used by the app. |
 | Test Google Cloud data and messaging clients | Provider emulators; Fake GCS Server, Fullstory, BigQuery, Cloud Tasks, or Pub/Sub pstest for Go | Client endpoints, SQL/queries, messages, tasks, and failure semantics. |
 | Test several Google Cloud APIs together | Floci GCP | REST/gRPC coverage and integrated behavior for your specific flow. |
+| Test Snowflake SQL and data pipelines locally | LocalStack for Snowflake | Required SQL features, client connectivity, pipeline behavior, and Snowflake license access. |
 | Test real VM boot and guest networking through AWS-compatible APIs | Spinifex | KVM host setup, cloud-init, SSH reachability, network rules, teardown, and differences from AWS. |
 | Test infrastructure automation across clouds | cloudemu; Vera for EC2/Compute scope | Full create/read/update/delete lifecycle with the real CLI or IaC provider. |
 | Run emulators in automated Java tests | Testcontainers Azure, Google Cloud, or LocalStack modules | Image readiness, fixture isolation, cleanup, and parallel execution. |
@@ -103,6 +104,12 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 | [cloudemu](https://github.com/stackshy/cloudemu) | Open source | AWS, Azure, GCP API simulation | Server, Docker, or embedded Go | Community | In-memory API state is not provisioned infrastructure; test reset and endpoint routing. |
 | [Vera](https://github.com/project-vera/vera) | Other distributions | AWS EC2 and Google Compute APIs | Docker Compose | Community | Scope is compute/infrastructure simulation, not all AWS or GCP services. |
 
+### Snowflake
+
+| Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
+| --- | --- | --- | --- | --- | --- |
+| [LocalStack for Snowflake 💰 📜](https://docs.localstack.cloud/snowflake) | Paid/commercial | Snowflake SQL APIs | Container, managed through CLI or Docker | Vendor | SQL feature coverage, SDK and pipeline integrations, and license activation. |
+
 ### Supporting Tools
 
 | Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
@@ -122,13 +129,14 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 
 ## License and access notes
 
-Existing entries checked against primary sources on **2026-09-28**; Spinifex and LocalStack for Azure checked on **2026-09-29**. These markers describe the listed distribution; dependencies and optional hosted services can carry separate terms.
+Existing entries checked against primary sources on **2026-09-28**; Spinifex and LocalStack for Azure checked on **2026-09-29**; LocalStack for Snowflake checked on **2026-09-30**. These markers describe the listed distribution; dependencies and optional hosted services can carry separate terms.
 
 | Tool | Markers | What to check | Primary source |
 | --- | --- | --- | --- |
 | Spinifex | 💰 | AGPL-3.0 is free; an optional paid commercial edition includes a separate license, enterprise features, and support. | [Purchase and editions](https://mulgadc.com/purchase), [source license](https://github.com/mulgadc/spinifex/blob/main/LICENSE). |
 | LocalStack | 💰 📜 | Commercial use is offered through paid plans, subject to vendor exceptions/programs. Hobby is free for non-commercial use; activation requires an account/token. | [Plans and pricing](https://www.localstack.cloud/pricing), [activation](https://docs.localstack.cloud/aws/getting-started/installation). |
 | LocalStack for Azure | 💰 📜 | Private preview: Azure access is enabled on request for an active LocalStack subscription (paid, trial, or Hobby). Commercial use is offered through paid plans; Hobby is free for non-commercial use. Activation requires an auth token; CI requires a CI Auth Token. | [Preview access and activation](https://docs.localstack.cloud/azure/getting-started/auth-token/#managing-your-license), [plans and pricing](https://www.localstack.cloud/pricing), [Terms of Service](https://www.localstack.cloud/legal/terms-of-service). |
+| LocalStack for Snowflake | 💰 📜 | Snowflake access is available through a trial or paid offering. Activation requires an auth token and an assigned Snowflake license. | [License access and activation](https://docs.localstack.cloud/snowflake/getting-started/auth-token/), [Terms of Service](https://www.localstack.cloud/legal/terms-of-service). |
 | DynamoDB Local | 📜 | The downloadable software has a specific AWS license agreement. This marker identifies those conditions, not a paid emulator subscription. | [DynamoDB Local License Agreement](https://aws.amazon.com/dynamodb/dynamodblocallicense). |
 | Azure Event Hubs Emulator | 📜 | Startup requires accepting Microsoft's software terms through `ACCEPT_EULA`. | [Microsoft setup and EULA instructions](https://learn.microsoft.com/en-us/azure/event-hubs/test-locally-with-event-hub-emulator). |
 | Azure Service Bus Emulator | 📜 | Setup requires accepting the emulator and SQL Server Linux terms through `ACCEPT_EULA`. | [Microsoft setup and EULA instructions](https://learn.microsoft.com/en-us/azure/service-bus-messaging/test-locally-with-service-bus-emulator). |
@@ -151,6 +159,8 @@ An unmarked entry is not a claim of unrestricted use or a verified open-source r
 The [former LocalStack source repository](https://github.com/localstack/localstack) is archived, but its notice directs users to the unified product. The catalog therefore links current product documentation rather than treating an archived checkout as the supported distribution. Current [installation documentation](https://docs.localstack.cloud/aws/getting-started/installation) requires authentication to activate AWS features; check plan and CI conditions before adopting it.
 
 LocalStack for Azure has no public source repository, so the catalog links its [documentation](https://docs.localstack.cloud/azure). It is in private preview; review the [license and access notes](#license-and-access-notes) before adopting it.
+
+LocalStack for Snowflake runs in a single container for local SQL and data pipeline testing without a real Snowflake account. Its documentation includes [feature coverage](https://docs.localstack.cloud/snowflake/feature-coverage/) and [SQL functions](https://docs.localstack.cloud/snowflake/sql-functions/) references; see the [license and access notes](#license-and-access-notes) for activation requirements.
 
 ### Hiraeth coverage
 
