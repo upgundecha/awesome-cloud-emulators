@@ -32,10 +32,14 @@ These are candidates to evaluate, not a benchmark ranking or a claim of intercha
 | Test a Firebase application | Firebase Local Emulator Suite | Auth, Security Rules, database events, and function triggers used by the app. |
 | Test Google Cloud data and messaging clients | Provider emulators; Fake GCS Server, Fullstory, BigQuery, Cloud Tasks, or Pub/Sub pstest for Go | Client endpoints, SQL/queries, messages, tasks, and failure semantics. |
 | Test several Google Cloud APIs together | Floci GCP | REST/gRPC coverage and integrated behavior for your specific flow. |
+| Test OCI resource and application integrations | Floci OCI | Endpoint routing, work requests, tenancy isolation, and required sidecars; signature parsing does not prove authorization. |
+| Test Cloudflare Workers and bindings | Miniflare through Wrangler or its programmatic API | Local binding behavior, persistence, and differences from production; distinguish local execution from remote bindings. |
+| Test European cloud infrastructure automation | Feint | Provider-specific CLI/IaC operation coverage, endpoint guards, and control-plane versus optional machine runtime behavior. |
 | Test real VM boot and guest networking through AWS-compatible APIs | Spinifex | KVM host setup, cloud-init, SSH reachability, network rules, teardown, and differences from AWS. |
 | Test infrastructure automation across clouds | cloudemu; Vera for EC2/Compute scope | Full create/read/update/delete lifecycle with the real CLI or IaC provider. |
 | Run emulators in automated Java tests | Testcontainers Azure, Google Cloud, or LocalStack modules | Image readiness, fixture isolation, cleanup, and parallel execution. |
 | Invoke and debug Lambda locally | AWS SAM CLI; Lambda Runtime Interface Emulator for container images | Runtime and event handling; configure external service dependencies separately. |
+| Invoke and debug Alibaba Cloud functions locally | Serverless Devs with the appropriate FC component | Runtime and component version, local invocation, and separately configured service dependencies. |
 | Run Azure Functions locally | Azure Functions Core Tools | Trigger behavior and connections to local service emulators. |
 | Test network failures against an emulator | Toxiproxy | Verify retry, timeout, and recovery behavior without claiming cloud network parity. |
 | Rebuild a baseline from recorded requests | Emulator recording or a client-side request log, such as Moto Recorder | Replay into a clean instance and verify generated identifiers and dependencies. |
@@ -43,7 +47,7 @@ These are candidates to evaluate, not a benchmark ranking or a claim of intercha
 
 ## Comparison by cloud
 
-Every README entry appears below once. Tool links lead to primary documentation. **AWS, Microsoft, and Google** in the maintainer column mean cloud-provider supplied; **community** includes independent individuals and company-sponsored open-source projects; **vendor** identifies a commercial platform. These labels do not determine quality or licensing.
+Every README entry appears below once. Tool links lead to primary documentation. **AWS, Microsoft, Google, and Cloudflare** in the maintainer column mean cloud-provider supplied; **community** includes independent individuals and company-sponsored open-source projects; **vendor** identifies a commercial platform. These labels do not determine quality or licensing.
 
 Within each section, open-source tools come first, followed by other distributions, then paid/commercial tools; entries are alphabetized within each group. “Other distributions” includes free vendor binaries, mixed suites, and tools whose runtime source license has not been established. A usable open-source edition stays in the first group even when optional paid editions exist.
 
@@ -96,11 +100,24 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 | [Firestore Emulator](https://cloud.google.com/firestore/native/docs/emulator) | Other distributions | Firestore | gcloud or Firebase CLI with Java runtime | Google | Check transactions, queries, and differences from production indexes and limits. |
 | [Pub/Sub Emulator](https://cloud.google.com/pubsub/docs/emulator) | Other distributions | Pub/Sub | gcloud component with Java runtime; container workflows | Google | Check acknowledgments, ordering, retry, and subscription features. |
 
+### Oracle Cloud
+
+| Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
+| --- | --- | --- | --- | --- | --- |
+| [Floci OCI](https://github.com/floci-io/floci-oci) | Open source | OCI identity, object storage, messaging, and selected other APIs | Docker / Compose or Java; optional Fn Project and k3s sidecars | Community | Verify supported operations, tenancy/persistence behavior, and sidecars; signatures are parsed but not verified. |
+
+### Cloudflare
+
+| Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
+| --- | --- | --- | --- | --- | --- |
+| [Miniflare](https://developers.cloudflare.com/workers/testing/miniflare/) | Open source | Workers execution and local service bindings | Node.js library or Wrangler local development, using workerd | Cloudflare | Check binding coverage and persistence; local tests do not establish edge-network behavior or full management API compatibility. |
+
 ### Cross-Cloud
 
 | Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
 | --- | --- | --- | --- | --- | --- |
 | [cloudemu](https://github.com/stackshy/cloudemu) | Open source | AWS, Azure, GCP API simulation | Server, Docker, or embedded Go | Community | In-memory API state is not provisioned infrastructure; test reset and endpoint routing. |
+| [Feint](https://github.com/stephrobert/feint) | Open source | Scaleway, Outscale, and Exoscale APIs | Go binary or container; optional Incus/OVN machine runtime | Community | Validate provider-specific CLI/IaC lifecycle and endpoint routing; authentication, quotas, capacity, and eventual consistency differ. |
 | [Vera](https://github.com/project-vera/vera) | Other distributions | AWS EC2 and Google Compute APIs | Docker Compose | Community | Scope is compute/infrastructure simulation, not all AWS or GCP services. |
 
 ### Supporting Tools
@@ -115,6 +132,7 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 | [Docker Checkpoint/Restore](https://docs.docker.com/reference/cli/docker/checkpoint) | Open source | Container process state | Docker Engine with CRIU | Docker / Moby | Experimental; verify daemon/runtime support and restore behavior on the actual Linux host. |
 | [Moto Recorder](https://docs.getmoto.org/en/stable/docs/configuration/recorder/index.html) | Open source | Recorded Moto requests | Moto feature; ServerMode APIs | Moto project | Enable recording; replay into clean state; generated identifiers need explicit validation. |
 | [Podman Checkpoint/Restore](https://podman.io/docs/checkpoint) | Open source | Container process state | Podman with CRIU and compatible OCI runtime | Podman project | Verify export/import, host compatibility, privileges, mounted data, and network identity. |
+| [Serverless Devs](https://github.com/Serverless-Devs/Serverless-Devs) | Open source | Local Alibaba Cloud Function Compute invocation/debugging through FC components | Node.js CLI with component-specific local runtime/container requirements | Community / Serverless Devs | Choose the correct FC component and runtime; distinguish local calls from deployment/remote invocation and provide service dependencies separately. |
 | [Testcontainers Azure Module](https://java.testcontainers.org/modules/azure/) | Open source | Azure emulator lifecycle in Java tests | Java test library controlling containers | Testcontainers project | Check image prerequisites, certificates, readiness, and isolated test state. |
 | [Testcontainers Google Cloud Module](https://java.testcontainers.org/modules/gcloud) | Open source | Emulator lifecycle in Java tests | Java test library controlling containers | Testcontainers project | Supporting tool; fidelity and licensing come from the selected emulator image. |
 | [Testcontainers LocalStack Module](https://java.testcontainers.org/modules/localstack/) | Open source | LocalStack lifecycle in Java tests | Java test library controlling a container | Testcontainers project | Check LocalStack image version, plan access, endpoints, and supported services. |
@@ -159,6 +177,16 @@ LocalStack for Azure has no public source repository, so the catalog links its [
 ### Fullstory coverage
 
 Fullstory's repository ships Bigtable and Cloud Storage implementations. Its README also discusses Google's `pubsub/pstest`, now listed separately as an in-process Go fake. The provider's standalone Pub/Sub Emulator remains a distinct entry.
+
+### Additional provider coverage
+
+[Floci OCI's service notes](https://github.com/floci-io/floci-oci#supported-services) distinguish in-process APIs from optional Fn Project and k3s execution. Request signatures supply tenancy/user context but are not verified, and IAM policy statements are stored rather than proof of real OCI authorization. Check operation-level gaps, including object versioning and lifecycle policies.
+
+[Feint's limits](https://github.com/stephrobert/feint/blob/main/docs/limits.md) and [confidence guide](https://github.com/stephrobert/feint/blob/main/docs/confidence.md) separate API simulation from optional Incus-backed execution. Real machine/network tests require compatible Linux runtime infrastructure; the control-plane container does not supply it. Guard provider-specific endpoints before IaC runs, and do not infer cloud authentication, quota, capacity, or eventual-consistency behavior.
+
+[Miniflare](https://developers.cloudflare.com/workers/testing/miniflare/) lives in the current [Workers SDK repository](https://github.com/cloudflare/workers-sdk/tree/main/packages/miniflare), replacing the former standalone repository. It simulates Workers and bindings rather than Cloudflare's entire management API. [Wrangler local development](https://developers.cloudflare.com/workers/local-development/) can be combined with remote bindings; check configuration before assuming every dependency is local or offline.
+
+[Serverless Devs local invocation](https://help.aliyun.com/en/functioncompute/faq-about-serverless-devs-1) is a supporting capability delivered through Function Compute components. Select the component for the target FC generation and validate runtime/debugger limitations. Local function execution does not reproduce OSS, queues, networking, or authorization in the cloud.
 
 ## Beyond emulation
 
@@ -226,7 +254,7 @@ These combinations are research candidates; verify restore behavior and isolatio
 
 ## Evidence and reconciliation notes
 
-Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed on **2026-10-01**. This is a documentation-based comparison, not a hands-on compatibility certification or performance benchmark.
+Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed on **2026-10-01**. Additional provider entries reviewed on **2026-10-02**. This is a documentation-based comparison, not a hands-on compatibility certification or performance benchmark.
 
 - Reconciled the original repository catalog with `awesome-cloud-emulators-README-v2.txt`: retained all 18 existing entries, added 12 distinct tools, and merged naming/URL variants rather than duplicating them. That reconciliation produced 28 emulator/mock entries plus 2 supporting tools. A subsequent checkpoint/baseline review added 5 supporting tools or features. This review added 2 focused API test doubles and 5 supporting tools, bringing the emulator and supporting-tool catalog to 42 entries: 30 emulators/mocks and 12 supporting entries. Spinifex was subsequently added in the separate Beyond Emulation section and is outside that count.
 - Preserved the attachment's provider and multi-service/single-service organization, while keeping detailed comparisons in this guide and a concise catalog in the README.
@@ -234,4 +262,5 @@ Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed
 - Removed the attachment's Cloud Tasks inactivity claim: the [repository metadata](https://api.github.com/repos/aertje/cloud-tasks-emulator) reported a push on 2026-09-09 during this review. A recent push alone does not establish maintenance quality or compatibility.
 - Narrowed Fullstory's shipped coverage to Bigtable and Cloud Storage, and Vera's scope to EC2 and Google Compute. Distinguished LocalStack's archived source from its current product.
 - Treated the attachment's Hacker News link as discovery context, not technical evidence or an independently verified origin claim for this repository.
+- The 2026-10-02 provider review added Feint, Floci OCI, Miniflare, and Serverless Devs after checking 50+ repository stars, non-archived status, and repository pushes in 2026. Miniflare shares the Workers SDK repository's star count; Serverless Devs' FC components have separate repositories and counts. These discovery filters do not establish maintenance quality or compatibility. Feint, Floci OCI, and Miniflare are Apache-2.0, MIT, and MIT respectively; Serverless Devs is Apache-2.0, while its FC3 component is MIT. The current catalog contains 51 entries, including Beyond Emulation.
 - Preserved the existing CC0 license and contribution policy; omitted the attachment's obsolete instruction to add a license file.
