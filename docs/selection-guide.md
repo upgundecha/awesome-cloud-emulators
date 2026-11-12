@@ -25,7 +25,7 @@ These are candidates to evaluate, not a benchmark ranking or a claim of intercha
 | Scenario | Candidates | First validation |
 | --- | --- | --- |
 | Isolate Python logic using AWS SDK calls | Moto | Supported calls, mock lifecycle, and state isolation. |
-| Exercise an AWS event-driven application | fakecloud, Floci, Hiraeth, LocalEmu, MiniStack, LocalStack | A complete publish → consume → retry path, not just resource creation. |
+| Exercise an AWS event-driven application | AWS Emulator, fakecloud, Floci, Hiraeth, LocalEmu, MiniStack, LocalStack | Published operation fidelity plus a complete publish → consume → retry path, not just resource creation. |
 | Test one AWS dependency | ElasticMQ, S3Mock, S3Proxy; DynamoDB Local | Exact database, queue, or object operations required by the application. |
 | Test an Azure application dependency | Azure Key Vault Emulator, Azurite; Cosmos DB, Event Hubs, or Service Bus emulators | SDK connectivity, TLS, and required data-plane behavior. |
 | Test several Azure APIs together | Floci AZ, miniblue, Topaz; LocalStack for Azure | Cross-service behavior, runtime requirements, and which services need external engines or backends. |
@@ -58,6 +58,7 @@ Delivery describes how you consume the tool, rather than guessing the implementa
 
 | Tool | Access group | API scope | How it runs | Maintainer | Key evaluation question |
 | --- | --- | --- | --- | --- | --- |
+| [AWS Emulator](https://docs.aws.amazon.com/emulator/) | Open source | AWS APIs with published per-service fidelity scores | Linux RPM/DEB; locally built Docker image; embedded Rust test mode | AWS | Check release fidelity for required operations; IAM policy evaluation, persistence, and cross-account or cross-Region behavior are outside its model. |
 | [ElasticMQ](https://github.com/softwaremill/elasticmq) | Open source | SQS-compatible queues | JVM server, embedded library, or Docker | Community / SoftwareMill | Verify FIFO, visibility timeouts, redelivery, and dead-letter behavior. |
 | [fakecloud](https://fakecloud.dev) | Open source | AWS APIs | Binary or Docker; test SDKs | Community | Exercise async control and assertions; verify the operations you need. |
 | [Floci](https://floci.io/floci) | Open source | AWS APIs | Docker / Compose | Community | Check service-to-service flows and persistence for your workload. |
@@ -172,6 +173,14 @@ An unmarked entry is not a claim of unrestricted use or a verified open-source r
 - **Language versus runtime:** Go code may be used through a server by any SDK; Java may be a runtime prerequisite rather than a verified implementation language. Compare setup and integration requirements first.
 - **Local does not necessarily mean offline or free:** downloads, activation, telemetry, feature tiers, commercial-use conditions, and CI terms vary. Inspect the chosen release and plan.
 
+### AWS Emulator scope and fidelity
+
+[AWS Emulator](https://docs.aws.amazon.com/emulator/) is an AWS-maintained, CC0-1.0 local API emulator that works with the AWS CLI and SDKs through a local HTTPS endpoint. It is available as RPM and Debian packages on Linux; macOS, Windows, and container-based users build a Docker image from the supplied Dockerfile. Rust tests can also embed an isolated emulator instance. It does not require an AWS account and has no additional service fee.
+
+Coverage and behavior vary by service and feature. Check the [per-release fidelity scores](https://docs.aws.amazon.com/emulator/latest/userguide/fidelity.html) and the public [evaluation suite](https://github.com/aws/aws-emulator-evaluation-suite) for the operations in your test scenario. AWS documents stronger fidelity for control-plane operations than for data-plane behavior and IaC integrations. An unimplemented operation returns HTTP 501 rather than silently succeeding.
+
+Each process keeps resources in memory and deletes them when it stops. The emulator represents one account, does not model cross-account or cross-Region behavior, and does not evaluate IAM or resource policies as AWS does. Keep real-cloud tests for authorization and other production guarantees. Anonymous usage and error telemetry is enabled by default and [can be disabled](https://docs.aws.amazon.com/emulator/latest/userguide/telemetry.html).
+
 ### LocalStack source and product status
 
 The [former LocalStack source repository](https://github.com/localstack/localstack) is archived, but its notice directs users to the unified product. The catalog therefore links current product documentation rather than treating an archived checkout as the supported distribution. Current [installation documentation](https://docs.localstack.cloud/aws/getting-started/installation) requires authentication to activate AWS features; check plan and CI conditions before adopting it.
@@ -264,7 +273,7 @@ These combinations are research candidates; verify restore behavior and isolatio
 
 ## Evidence and reconciliation notes
 
-Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed on **2026-10-01**. Additional provider entries reviewed on **2026-10-02**. This is a documentation-based comparison, not a hands-on compatibility certification or performance benchmark.
+Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed on **2026-10-01**. Additional provider entries reviewed on **2026-10-02**; AWS Emulator reviewed on **2026-11-12**. This is a documentation-based comparison, not a hands-on compatibility certification or performance benchmark.
 
 - Reconciled the original repository catalog with `awesome-cloud-emulators-README-v2.txt`: retained all 18 existing entries, added 12 distinct tools, and merged naming/URL variants rather than duplicating them. That reconciliation produced 28 emulator/mock entries plus 2 supporting tools. A subsequent checkpoint/baseline review added 5 supporting tools or features. This review added 2 focused API test doubles and 5 supporting tools, bringing the emulator and supporting-tool catalog to 42 entries: 30 emulators/mocks and 12 supporting entries. Spinifex was subsequently added in the separate Beyond Emulation section and is outside that count.
 - Preserved the attachment's provider and multi-service/single-service organization, while keeping detailed comparisons in this guide and a concise catalog in the README.
@@ -272,5 +281,5 @@ Documentation review: **2026-09-28**; Hiraeth and access-group ordering reviewed
 - Removed the attachment's Cloud Tasks inactivity claim: the [repository metadata](https://api.github.com/repos/aertje/cloud-tasks-emulator) reported a push on 2026-09-09 during this review. A recent push alone does not establish maintenance quality or compatibility.
 - Narrowed Fullstory's shipped coverage to Bigtable and Cloud Storage, and Vera's scope to EC2 and Google Compute. Distinguished LocalStack's archived source from its current product.
 - Treated the attachment's Hacker News link as discovery context, not technical evidence or an independently verified origin claim for this repository.
-- The 2026-10-02 provider review added Feint, Floci OCI, Miniflare, and Serverless Devs after checking 50+ repository stars, non-archived status, and repository pushes in 2026. Miniflare shares the Workers SDK repository's star count; Serverless Devs' FC components have separate repositories and counts. These discovery filters do not establish maintenance quality or compatibility. Feint, Floci OCI, and Miniflare are Apache-2.0, MIT, and MIT respectively; Serverless Devs is Apache-2.0, while its FC3 component is MIT. The current catalog contains 52 entries, including Beyond Emulation.
+- The 2026-10-02 provider review added Feint, Floci OCI, Miniflare, and Serverless Devs after checking 50+ repository stars, non-archived status, and repository pushes in 2026. Miniflare shares the Workers SDK repository's star count; Serverless Devs' FC components have separate repositories and counts. These discovery filters do not establish maintenance quality or compatibility. Feint, Floci OCI, and Miniflare are Apache-2.0, MIT, and MIT respectively; Serverless Devs is Apache-2.0, while its FC3 component is MIT. AWS Emulator was added after its general-availability launch and official documentation review on 2026-11-12. The current catalog contains 53 entries, including Beyond Emulation.
 - Preserved the existing CC0 license and contribution policy; omitted the attachment's obsolete instruction to add a license file.
