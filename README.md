@@ -44,6 +44,7 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
 
 **Open source**
 
+- [AWS Emulator](https://github.com/aws/aws-emulator) - AWS-maintained local API emulator for CLI and SDK tests, with Linux packages, a locally built Docker image, embedded Rust test mode, and published fidelity scores.
 - [fakecloud](https://fakecloud.dev) - Local AWS API emulator with test SDKs for inspecting effects, resetting state, and controlling asynchronous processors.
 - [Floci](https://floci.io/floci) - Community AWS emulator that exposes multiple service APIs through a shared local endpoint.
 - [Hiraeth](https://github.com/SethPyle376/hiraeth) - Rust-based AWS emulator focused on SQS and partial SNS/IAM APIs, with SQLite persistence and a web UI for inspecting requests and local state.
