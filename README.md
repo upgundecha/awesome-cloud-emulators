@@ -119,6 +119,7 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
 - [Cloud Tasks Emulator](https://github.com/aertje/cloud-tasks-emulator) - Community Cloud Tasks emulator for local queue and task-dispatch testing.
 - [Fake GCS Server](https://github.com/fsouza/fake-gcs-server) - Community Google Cloud Storage emulator usable as a standalone server or Go testing library.
 - [Pub/Sub pstest](https://pkg.go.dev/cloud.google.com/go/pubsub/v2/pstest) - In-process fake Pub/Sub server from the Google Cloud Go client libraries for focused Go tests.
+- [spanbolt](https://github.com/strise/spanbolt) - Community Cloud Spanner emulator in Rust that serves the Spanner Emulator's gRPC and REST APIs, with SQL analysis by GoogleSQL, aimed at faster test suites.
 - [Spanner Emulator](https://cloud.google.com/spanner/docs/emulator) - Google-provided local Spanner environment for testing application behavior against supported database APIs.
 
 **Other distributions**
