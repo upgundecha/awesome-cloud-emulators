@@ -81,6 +81,7 @@ See [license and access notes](docs/selection-guide.md#license-and-access-notes)
 
 **Paid/commercial**
 
+- [Locally 💰 📜](https://locally.build) - Vendor-maintained Azure and Entra emulator distributed as a single binary, with support for 39 Resource Providers, 18 Data Plane Emulators (some backed by Docker or Podman) and each with a built-in UI; currently in public preview with a generous free tier, and commercial use is permitted on free and paid plans.
 - [LocalStack for Azure 💰 📜](https://docs.localstack.cloud/azure) - Vendor-maintained Azure emulator distributed as a container, covering Resource Manager and selected data plane APIs; it is in private preview with access enabled on request, commercial use requires an appropriate paid plan, and activation requires an auth token.
 
 ### Azure Single-Service
@@ -161,6 +162,11 @@ Some infrastructure tests need real guest execution, storage, and networking beh
 
 - [Spinifex 💰](https://github.com/mulgadc/spinifex) - Self-hosted AWS-compatible platform for testing infrastructure and workloads with real QEMU/KVM instances, storage, and OVN-backed networking.
 
+## Microsoft Entra
+
+**Paid/commercial**
+
+- [Locally 💰 📜](https://locally.build) - Vendor-maintained Azure and Entra emulator distributed as a single binary, with support for 39 Resource Providers, 18 Data Plane Emulators (some backed by Docker or Podman) and each with a built-in UI; currently in public preview with a generous free tier, and commercial use is permitted on free and paid plans.
 
 ## Snowflake
 
